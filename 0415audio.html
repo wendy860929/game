@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>audio api</title>
+</head>
+<body>
+    <h3>audio api test</h3>
+    <button onclick="playsound(sounds.hihat)">play hihat</button>
+    <button onclick="playsound(sounds.kick)">play kick</button>
+    <button onclick="playsound(sounds.snare)">play snare</button>
+
+    <script>
+        let audio=new AudioContext();
+        function playsound(buffer){
+            // 建立buffersource物件
+            let source=audio.createBufferSource();
+            source.buffer=buffer
+            source.connect(audio.destination); // 串接到音效環境的尾巴
+            source.start(0)  //0是立刻撥放也可以設10秒後撥
+        }
+        // 載入音效
+        let sounds={
+            hihat:"hihat.wav",kick:"kick.wav",snare:"snare.wav"
+        };
+        function loadsound(name,src){
+            let req=new XMLHttpRequest()  // 透過網路仔入音效檔案
+            req.open("get",src);
+            req.responseType="arraybuffer"// req.response 用arraybuffer 的形式取得資料
+            req.addEventListener("load",function(){           
+                // 將arraybuffer 的資料解碼成 audiobuffer
+                audio.decodeAudioData(req.response,function(buffer){
+                    //hihat=buffer
+                    //console.log(buffer)
+                    console.log(name,"loaded")
+                    sounds[name]=buffer
+                })
+                
+            })
+            req.send()
+        }
+    //逐一取得物件中的成員 for(let 變數名稱 in 物件){}
+    for (let name in sounds){
+        // 非同步程式
+        loadsound(name,sounds[name])
+    }
+    console.log("game start")
+    
+    </script>
+</body>
+</html>

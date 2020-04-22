@@ -1,0 +1,3 @@
+點陣  jpg,png   photoshop     canvas
+
+向量   svg      illustrator    svg

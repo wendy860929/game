@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Particle System</title>
+<style>
+    .rect{
+        position: fixed;
+        width: 5px;height: 5px;background-color: blueviolet;
+    }
+</style>
+</head>
+<body>
+    <button onclick="start()">start</button>
+    <div id="root"></div>
+    <script>
+        /*
+        let x=[10,30,50];
+        let y=[30,40,50];
+        let vx=[1,3,9]
+        let vy=[3,4,5]
+        let updates=[function(i){
+            x[i]=x[i]+vx[i];
+            y[i]=y[i]+vy[i];
+            if(x[i]>=400){
+                x[i]=400;
+            }
+        },function(i){
+            x[i]=x[i]+vx[i];
+            y[i]=y[i]+vy[i];
+        },function(i){
+            x[i]=x[i]+vx[i];
+            y[i]=y[i]+vy[i];
+        }
+
+        ]
+        */
+        class Rect{
+            constructor(x,y,vx,vy){
+                this.x=x;
+                this.y=y;
+                this.vx=vx;
+                this.vy=vy;
+            }
+            update(){
+                this.x+=this.vx;
+                this.y+=this.vy
+            }
+        }
+        let rects=[
+            new Rect(100,100,3,2),
+            new Rect(120,120,0,4)
+        ]
+        console.log(rects)
+        /*
+        let rects=[
+            {x:100,y:100,vx:3,vy:2,update:function(){
+                this.x+=this.vx;
+                this.y+=this.vy
+            }},
+            {x:120,y:120,vx:4,vy:4,update:function(){
+                this.x+=this.vx;
+                this.y+=this.vy
+            }}
+        ]
+        */
+        function update(){
+            for(let i=0;i<rects.length;i++){
+                /*
+                x[i]=x[i]+vx[i];
+                y[i]=y[i]+vy[i];
+                */
+                rects[i].update();
+            }
+            render()
+        }
+        function render(){
+            let root=document.querySelector("#root");
+            root.innerHTML="" //先清空再重新畫上去，不然會疊上去
+            for(let i=0;i<rects.length;i++){
+                let rect=document.createElement("div");
+                rect.className="rect";
+                rect.style.left=rects[i].x+"px";
+                rect.style.top=rects[i].y+"px";
+                root.appendChild(rect)
+            }
+        }
+        //render()
+        function start(){
+            window.setInterval(update,10)  //每0.01秒跑一次= 一秒跑一百次
+        }
+    /*
+        let rect=[
+            {x:10,y:10},
+            {x:20,y:20}
+        ]
+    */
+    </script>
+</body>
+</html>

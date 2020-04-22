@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas game</title>
+</head>
+<body>
+    <h3>canvas game</h3>
+    <button onclick="start()">start</button>
+    <hr/>
+    <canvas id="cvs" width="800" height="600" style="border: 1px solid black;"></canvas>
+    <script src="lib.js"></script>
+<script>
+    let ctx=document.querySelector("#cvs").getContext("2d")
+    let particles=[
+        new RectSystem(50,50),
+        new RectSystem(50,300),
+        new wall(300)
+] 
+    function refresh(){
+        //particles.push(new Rect(50,50));
+        //更新每個 particle 物件的資料
+        for(let i=0;i<particles.length;i++){
+            let die=particles[i].update()
+            if (die){ //如果元件確定要回收 從陣列刪除
+                particles.splice(i,1);
+                i--;
+            }
+        }
+        //清空畫面
+        ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height)
+        // 全部重劃
+        for(let i=0;i<particles.length;i++){
+            particles[i].render()
+        }
+    }
+    
+    function start(){
+        window.setInterval(refresh,10)
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewort" content="width=device-width, initial-scale=1.0">
+    <title>practice0415smoke</title>
+</head>
+<body>
+    <h3>失火拉拉拉</h3>
+    <canvas id="cvs" width="800px" height="600px" style="border:1px solid black"></canvas>
+    <script src="practice0415libs.js"></script>
+<script>
+    let ctx=document.querySelector("#cvs").getContext("2d")
+    let particles=[]
+    function refresh(){
+        for(let i=0;i<particles.length;i++){
+            let die=particles[i].upadte()
+            if(die){
+                particles.splice(i,1)
+                i--
+            }
+        }
+
+        ctx.clearRect(0,0,ctx.canvas.width,ctx.canvas.height)
+        for(let i=0;i<particles.length;i++){
+            particles[i].render()
+        }
+    }
+    let smokeImage=new Image;
+    smokeImage.src="smoke.png"
+    smokeImage.addEventListener("load",function(){
+        window.setInterval(refresh,10)
+    })
+</script>
+</body>
+</html>

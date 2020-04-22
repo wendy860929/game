@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>canvas</title>
+</head>
+<body>
+    <h3>canvas practice</h3>
+    <input type="file" id="file-input" onchange="loadFile(this);" style="display: none;"/>
+    <button onclick="openFile()">開啟檔案</button>
+    <button onclick="invert()">反轉顏色</button>
+    <button onclick="brigthen()">變亮顏色</button>
+    <button onclick="greyscale()">灰階</button>
+    <button onclick="greyscale()">灰階</button>
+    <button onclick="download()">下載檔案</button>
+    <a id="download-link" ></a>
+    <hr/>
+    <canvas 
+        id="cvs" width="600" height="450"
+        style="border:1px solid black"
+    ></canvas>
+    <script>
+        let cvs=document.querySelector("#cvs"); //取得canvas 標籤
+        let ctx=cvs.getContext("2d");  //取得對應的context 物件 --畫布的內容   webgl是3d繪圖
+
+        function openFile(){
+            let fileInput=document.querySelector("#file-input");
+            fileInput.click()
+        }
+        function download(){
+            cvs.toBlob(function(bolb){
+                let src=URL.createObjectURL(blob) //把canvas 的資料轉成blob物件
+                    let link =document.querySelector("#download-link"); //將blob轉成網址
+                    link.href=src;
+                    link.download="image.png"
+                    link.click();
+            })
+        }
+        function invert(){
+            let pixels=ctx.getImageData(0,0,cvs.width,cvs.height);
+            let data =pixels.data;
+            console.log(data)
+            //以像素為一單位逐一計算
+            for (let i=0;i<data.length;i+=4){
+                data[i]=255-data[i]//red 最白變最黑
+                data[i+1]=255-data[i+1]   //green
+                data[i+2]=255-data[i+2]  //blue
+                //data[i+3]  //alpha
+            }
+            ctx.putImageData(pixels,0,0)
+        }
+        function brigthen(){
+            let pixels=ctx.getImageData(0,0,cvs.width,cvs.height);
+            let data =pixels.data;
+            console.log(data)
+            //以像素為一單位逐一計算
+            for (let i=0;i<data.length;i+=4){
+                data[i]+=5
+                data[i+1]+=5   //green
+                data[i+2]+=5  //blue
+                //data[i+3]  //alpha
+            }
+            ctx.putImageData(pixels,0,0)
+        }
+        function greyscale(){
+            let pixels=ctx.getImageData(0,0,cvs.width,cvs.height);
+            let data =pixels.data;
+            //以像素為一單位逐一計算
+            for (let i=0;i<data.length;i+=4){
+                //計算三個顏色的平均數，在把平均數同時設定給三個顏色
+                let newcolor=(data[i]+data[i+1]+data[i+2])/3
+                data[i]=newcolor
+                data[i+1]=newcolor
+                data[i+2]=newcolor
+            }
+            ctx.putImageData(pixels,0,0)
+        }
+        function loadFile(input){
+            let file=input.files[0]; //取得選取的檔案物件
+            //console.log(file);
+            let src=URL.createObjectURL(file);
+            console.log(src)
+            loadImage(src)
+        }
+        function loadImage(src){
+            let img=new Image(); //相當於<img/>
+            img.src=src //圖片的網址
+            img.addEventListener("load",function(){
+                //確保圖片載入完成，才能直接畫到畫布
+                //console.log(img.width,img.height)
+                cvs.width=img.width;
+                cvs.height=cvs.height
+                ctx.drawImage(img,0,0,cvs.width,cvs.height)//(圖片來源,x,y,width,height)
+            })
+        }
+        /*
+        //畫上一張圖
+        let img=new Image(); //相當於<img/>
+        img.src="landscape.jpg"
+        img.addEventListener("load",function(){
+            //確保圖片載入完成，才能直接畫到畫布
+            console.log(img.width,img.height)
+            cvs.width=img.width;
+            cvs.height=cvs.height
+            ctx.drawImage(img,0,0,cvs.width,cvs.height)//(圖片來源,x,y,width,height)
+        })
+        // 使用 context 物件作畫
+        //填滿
+        ctx.fillStyle="blue";
+        ctx.fillRect(100,100,50,50); //距離xy 100 100畫一個長寬50 50 的方形
+        ctx.fillStyle="black";
+        ctx.font="normal normal bold 45px/45px ariel"; // 設定方式和css font 屬性依樣
+        ctx.strokeText("hello",300,50);
+        ctx.fillText("hello",300,50);
+        //描邊
+        ctx.strokeStyle="green"
+        ctx.strokeRect(200,200,50,100)
+        // 描繪路徑: 定義路徑>填滿或描邊
+        ctx.beginPath();
+        ctx.moveTo(300,100);
+        ctx.lineTo(400,150);
+        ctx.lineTo(350,180);
+        //ctx.stroke();描邊或填滿
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(500,100,50,0,2*Math.PI) //圓心座標 半徑 起始角度 2PI是360度
+        ctx.fill()
+        //曲線
+        ctx.beginPath();
+        ctx.moveTo(400,450);
+       // ctx.quadraticCurveTo(500,300,550,400) //二次曲線:二元一次方程式 (控制點,終點)
+        ctx.bezierCurveTo(450,300,500,500,550,400)
+        ctx.stroke()
+        */
+    </script>
+</body>
+</html>
